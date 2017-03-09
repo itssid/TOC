@@ -212,3 +212,80 @@ NFA re_to_nfa(string re) {
 	return operands.top();
 }
 
+int main() {
+	cout<<"\n\nThe Thompson's Construction Algorithm takes a regular expression as an input "
+		<<"and returns its corresponding Non-Deterministic Finite Automaton \n\n";
+	cout<<"\n\nThe basic building blocks for constructing the NFA are : \n";
+
+	NFA a, b;
+
+	cout<<"\nFor the regular expression segment : (a)";
+	a.set_vertex(2);
+	a.set_transition(0, 1, 'a');
+	a.set_final_state(1);
+	a.display();
+//	getch();
+
+	cout<<"\nFor the regular expression segment : (b)";
+	b.set_vertex(2);
+	b.set_transition(0, 1, 'b');
+	b.set_final_state(1);
+	b.display();
+//	getch();
+
+	cout<<"\nFor the regular expression segment [Concatenation] : (a.b)";
+	NFA ab = concat(a, b);
+	ab.display();
+//	getch();
+
+	cout<<"\nFor the regular expression segment [Kleene Closure] : (a*)";
+	NFA a_star = kleene(a);
+	a_star.display();
+//	getch();
+
+	cout<<"\nFor the regular expression segment [Or] : (a|b)";
+	int no_of_selections;
+	no_of_selections = 2;
+	vector<NFA> selections(no_of_selections, NFA());
+	selections.at(0) = a;
+	selections.at(1) = b;
+	NFA a_or_b = or_selection(selections, no_of_selections);
+	a_or_b.display();	
+//	getch();
+
+
+	string re;
+	set<char> symbols;
+
+	cout<<"\n*****\t*****\t*****\n";
+	cout<<"\nFORMAT : \n"
+		<<"> Explicitly mention concatenation with a '.' operator \n"
+		<<"> Enclose every concatenation and or section by parantheses \n"
+		<<"> Enclose the entire regular expression with parantheses \n\n";
+
+	cout<<"For example : \nFor the regular expression (a.(b|c))  -- \n";
+	NFA example_nfa = re_to_nfa("(a.(b|c))");
+	example_nfa.display();
+	
+	cout<<"\n\nEnter the regular expression in the above mentioned format - \n\n";
+	cin>>re;
+
+/*	char cur_sym;
+	int counter = 0;
+	for(string::iterator it = re.begin(); it != re.end(); ++it) {
+		cur_sym = (*it);
+		if(cur_sym != '(' && cur_sym != ')' && cur_sym != '*' && cur_sym != '|' && cur_sym != '.') {
+			cout<<cur_sym<<" "<<counter++<<endl;
+			symbols.insert(cur_sym);
+		}
+	}
+*/
+
+	cout<<"\n\nThe required NFA has the transitions : \n\n";
+	
+	NFA required_nfa;
+	required_nfa = re_to_nfa(re);
+	required_nfa.display();	
+
+	return 0;
+}
